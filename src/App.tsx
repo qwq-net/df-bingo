@@ -34,8 +34,8 @@ function App() {
       </header>
 
       <main className="container mx-auto flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-12 p-4 lg:p-8">
-        <div className="flex w-full max-w-[1000px] flex-col items-center justify-center gap-8 lg:flex-row lg:items-stretch lg:gap-12">
-          <div className="flex w-full max-w-[400px] flex-col gap-4 lg:max-w-[500px]">
+        <div className="flex w-full max-w-[1100px] flex-col items-center justify-center gap-8 lg:flex-row lg:items-center lg:gap-12">
+          <div className="flex w-full max-w-[400px] flex-col gap-4 lg:max-w-[540px]">
             <div className="relative aspect-square border-4 border-neutral-800 bg-black p-1 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
               <div className="grid h-full w-full grid-cols-6 grid-rows-6 gap-1">
                 {grid.map((num, i) => {
@@ -90,7 +90,7 @@ function App() {
           </div>
 
           <div className="flex w-full max-w-[400px] flex-col lg:max-w-[400px]">
-            <section className="relative flex h-full flex-col justify-center overflow-hidden rounded-sm border border-neutral-800 bg-neutral-800/30 p-6 shadow-xl lg:p-8">
+            <section className="relative flex h-full flex-col justify-center overflow-hidden rounded-sm border border-neutral-800 bg-neutral-800/30 p-6 shadow-xl lg:p-7">
               <div className="absolute top-0 right-0 h-16 w-16 translate-x-8 -translate-y-8 -rotate-45 bg-yellow-500/5"></div>
 
               <div className="mb-4 flex items-end justify-between border-b border-neutral-700 pb-2 lg:mb-8">
@@ -174,7 +174,7 @@ function App() {
         <div className="flex w-full max-w-[400px] flex-col gap-6 border-t border-neutral-800 pt-12 lg:max-w-[940px]">
           <section className="rounded-sm border bg-black/40 p-8 shadow-inner">
             <h3 className="mb-3 flex items-center gap-2 text-lg text-yellow-500 uppercase">
-              直感に反するビンゴの埋まらなさについて
+              直感に反するマスの埋まらなさについて
             </h3>
 
             <div className="grid gap-8 leading-relaxed text-neutral-400">
@@ -206,10 +206,10 @@ function App() {
               </div>
             </div>
           </section>
-          <p className="text-gray-500">
-            本プロジェクトは2020年頃に作成した Vue.js のコードを紛失したため、リバイバルとして React
-            に書き直したものです。 sunborngame.com とは一切関係ありません。
-          </p>
+          <div className="text-gray-500">
+            <p>2020年制作の Vue.js 版コード紛失に伴い、React でリメイクしたものです。</p>
+            <p>非公式の個人制作であり、sunborngame.com との関わりはありません。</p>
+          </div>
         </div>
       </main>
     </div>
