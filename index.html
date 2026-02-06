@@ -19,9 +19,51 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ドルフロ ビンゴイベントシミュレーター" />
     <meta name="twitter:description" content="36マスの重複ありビンゴ。期待値約150回の戦いを体感せよ。" />
+    <style>
+      body,
+      html {
+        background-color: #171717;
+        margin: 0;
+        padding: 0;
+        color: #e5e5e5;
+        font-family: sans-serif;
+      }
+      noscript {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        text-align: center;
+        padding: 2rem;
+      }
+      .noscript-content {
+        background-color: #000000;
+        border: 1px solid #404040;
+        padding: 2rem;
+        border-radius: 4px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+      .noscript-title {
+        color: #eab308;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+    </style>
   </head>
   <body>
-    <div id="root">JavaScriptを有効にしてください。</div>
-    <script type="module" src="./main.tsx"></script>
+    <div id="root">
+      <noscript>
+        <div class="noscript-content">
+          <div class="noscript-title">JavaScriptを有効にしてください</div>
+          <p>
+            このアプリケーションの実行には、JavaScriptの有効化が必要です。<br />
+            ブラウザの設定からJavaScriptを有効にして再度読み込んでください。
+          </p>
+        </div>
+      </noscript>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

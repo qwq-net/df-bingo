@@ -12,6 +12,8 @@ function App() {
     handleManualSelect,
     drawCount,
     bingoLines,
+    isAllCellsOpened,
+    canCompleteWithPoints,
     resetGame,
   } = useBingoGame();
 
@@ -91,7 +93,7 @@ function App() {
             <section className="relative flex h-full flex-col justify-center overflow-hidden rounded-sm border border-neutral-800 bg-neutral-800/30 p-6 shadow-xl lg:p-8">
               <div className="absolute top-0 right-0 h-16 w-16 translate-x-8 -translate-y-8 -rotate-45 bg-yellow-500/5"></div>
 
-              <div className="mb-6 flex items-end justify-between border-b border-neutral-700 pb-4 lg:mb-8">
+              <div className="mb-4 flex items-end justify-between border-b border-neutral-700 pb-2 lg:mb-8">
                 <h2 className="flex items-center gap-2 text-xl font-black tracking-tighter italic lg:text-2xl">
                   <span className="h-6 w-1.5 bg-yellow-500"></span>
                   保有ポイント
@@ -136,22 +138,32 @@ function App() {
                 <div className="grid grid-cols-1 gap-4">
                   <button
                     onClick={handleRandomDraw}
+                    disabled={isAllCellsOpened}
                     aria-label="乱数読解を実行して数字を抽選する"
-                    className="group relative bg-yellow-500 py-4 text-xl font-black tracking-[0.2em] text-black shadow-lg shadow-yellow-500/10 transition-all hover:bg-yellow-400 active:scale-95 lg:py-5 lg:text-2xl"
+                    className={`group relative py-4 text-xl font-black tracking-[0.2em] shadow-lg transition-all lg:py-5 lg:text-2xl ${
+                      isAllCellsOpened
+                        ? 'cursor-not-allowed bg-neutral-800 text-neutral-600 shadow-none'
+                        : 'bg-yellow-500 text-black shadow-yellow-500/10 hover:bg-yellow-400 active:scale-95'
+                    }`}
                   >
                     乱数読解
                   </button>
 
                   <button
                     onClick={() => setIsManualSelectMode(!isManualSelectMode)}
-                    disabled={points < 100}
-                    className={`relative border-2 py-3 font-black tracking-widest transition-all active:scale-95 lg:py-4 ${
-                      points >= 100
+                    disabled={points < 100 || isAllCellsOpened}
+                    className={`relative flex flex-col items-center justify-center border-2 py-3 font-black tracking-widest transition-all active:scale-95 lg:py-4 ${
+                      points >= 100 && !isAllCellsOpened
                         ? 'border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:bg-neutral-800'
                         : 'cursor-not-allowed border-neutral-800 text-neutral-700'
                     } ${isManualSelectMode ? 'border-yellow-500 bg-yellow-500/10 text-yellow-500' : ''} `}
                   >
-                    確定解読
+                    <span>確定解読</span>
+                    {canCompleteWithPoints && (
+                      <span className="mt-0.5 text-[8px] leading-tight font-bold tracking-normal text-yellow-500/80">
+                        全マス解読可能
+                      </span>
+                    )}
                   </button>
                 </div>
               </div>
@@ -168,20 +180,25 @@ function App() {
             <div className="grid gap-8 leading-relaxed text-neutral-400">
               <div className="space-y-4">
                 <p>
-                  ドルフロのビンゴイベントをやったとき、「リーチに入ってから妙に揃いづらいな。仕組まれてる？」と思ったことは無いでしょうか？「重複ありのビンゴは、直感に反してなかなか埋まらない」という事象は、統計学的な事実があります。
+                  ドルフロのビンゴイベントで、「リーチに入ってから妙に揃わない。確率を操作されているのでは？」と感じたことはないでしょうか。実は「あと少しなのに埋まらない」という現象には、統計学的な裏付けがあります。
                 </p>
                 <p>
+                  重複ありの抽選で全種類を揃えようとする際の難易度は、
                   <a
                     className="text-yellow-500/80"
                     href="https://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%BC%E3%83%9D%E3%83%B3%E3%82%B3%E3%83%AC%E3%82%AF%E3%82%BF%E3%83%BC%E5%95%8F%E9%A1%8C"
                   >
-                    クーポンコレクター問題
+                    クーポンコレクター問題（食玩問題）
                   </a>
-                  と呼ばれ、36マス全てを重複ありの抽選で揃える場合、期待値として約150回強の抽選が必要になります。重複なしである場合は36回でビンゴが揃うので、約150回強というのは直感に反して非常に多いと言えます。
+                  と呼ばれます。6*6の計36マスを重複ありの抽選で全て埋める場合、必要な抽選回数の期待値は約150回を超えます。全く重複がない（最短）なら36回で済むところが、重複を許容した途端に4倍以上の試行が必要になる計算です。
                 </p>
 
                 <p>
-                  本家ドールズフロントラインはこちら！
+                  さらに、FREEマスが存在しないことや、偶数マス仕様によって奇数マスで見られる交差点が無いことも、停滞感を増している要因になっています。
+                </p>
+
+                <p>
+                  本家ドールズフロントライン：
                   <a className="text-blue-500" href="https://gf-jp.sunborngame.com/">
                     gf-jp.sunborngame.com
                   </a>

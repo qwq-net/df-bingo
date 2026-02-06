@@ -1,10 +1,59 @@
 import { useCallback, useMemo, useState } from 'react';
 
+// 定数定義
+const GRID_SIZE = 6;
+const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
+const POINT_REWARD = 10;
+const POINT_COST = 100;
+const MAX_DRAW_NUMBER = 36;
+
+/**
+ * 初期グリッドを作成する（1〜36の数字をシャッフル）
+ */
+const createInitialGrid = (): number[] => {
+  const numbers = Array.from({ length: TOTAL_CELLS }, (_, i) => i + 1);
+  return numbers.sort(() => Math.random() - 0.5);
+};
+
+/**
+ * 現在の開封状況に基づいてビンゴラインを計算する
+ */
+const calculateBingoLines = (openedCells: Set<number>): number[][] => {
+  const lines: number[][] = [];
+
+  // 横（行）の判定
+  for (let r = 0; r < GRID_SIZE; r++) {
+    const row = Array.from({ length: GRID_SIZE }, (_, c) => r * GRID_SIZE + c);
+    if (row.every((index) => openedCells.has(index))) {
+      lines.push(row);
+    }
+  }
+
+  // 縦（列）の判定
+  for (let c = 0; c < GRID_SIZE; c++) {
+    const col = Array.from({ length: GRID_SIZE }, (_, r) => r * GRID_SIZE + c);
+    if (col.every((index) => openedCells.has(index))) {
+      lines.push(col);
+    }
+  }
+
+  // 斜めの判定（左上から右下）
+  const diag1 = Array.from({ length: GRID_SIZE }, (_, i) => i * GRID_SIZE + i);
+  if (diag1.every((index) => openedCells.has(index))) {
+    lines.push(diag1);
+  }
+
+  // 斜めの判定（右上から左下）
+  const diag2 = Array.from({ length: GRID_SIZE }, (_, i) => i * GRID_SIZE + (GRID_SIZE - 1 - i));
+  if (diag2.every((index) => openedCells.has(index))) {
+    lines.push(diag2);
+  }
+
+  return lines;
+};
+
 export const useBingoGame = () => {
-  const [grid, setGrid] = useState(() => {
-    const numbers = Array.from({ length: 36 }, (_, i) => i + 1);
-    return numbers.sort(() => Math.random() - 0.5);
-  });
+  const [grid, setGrid] = useState<number[]>(createInitialGrid);
 
   const [openedCells, setOpenedCells] = useState<Set<number>>(new Set());
   const [points, setPoints] = useState(0);
@@ -13,10 +62,7 @@ export const useBingoGame = () => {
   const [drawCount, setDrawCount] = useState(0);
 
   const resetGame = useCallback(() => {
-    setGrid(() => {
-      const numbers = Array.from({ length: 36 }, (_, i) => i + 1);
-      return numbers.sort(() => Math.random() - 0.5);
-    });
+    setGrid(createInitialGrid());
     setOpenedCells(new Set());
     setPoints(0);
     setLastDrawnNumber(null);
@@ -24,56 +70,38 @@ export const useBingoGame = () => {
     setDrawCount(0);
   }, []);
 
-  const bingoLines = useMemo(() => {
-    const lines: number[][] = [];
-    const size = 6;
+  const bingoLines = useMemo(() => calculateBingoLines(openedCells), [openedCells]);
 
-    for (let r = 0; r < size; r++) {
-      const row = Array.from({ length: size }, (_, c) => r * size + c);
-      if (row.every((index) => openedCells.has(index))) {
-        lines.push(row);
-      }
-    }
+  const isAllCellsOpened = useMemo(() => openedCells.size === TOTAL_CELLS, [openedCells]);
 
-    for (let c = 0; c < size; c++) {
-      const col = Array.from({ length: size }, (_, r) => r * size + c);
-      if (col.every((index) => openedCells.has(index))) {
-        lines.push(col);
-      }
-    }
-
-    const diag1 = Array.from({ length: size }, (_, i) => i * size + i);
-    if (diag1.every((index) => openedCells.has(index))) {
-      lines.push(diag1);
-    }
-    const diag2 = Array.from({ length: size }, (_, i) => i * size + (size - 1 - i));
-    if (diag2.every((index) => openedCells.has(index))) {
-      lines.push(diag2);
-    }
-
-    return lines;
-  }, [openedCells]);
+  const canCompleteWithPoints = useMemo(() => {
+    const remainingCells = TOTAL_CELLS - openedCells.size;
+    return remainingCells > 0 && remainingCells * POINT_COST <= points;
+  }, [openedCells, points]);
 
   const handleRandomDraw = useCallback(() => {
+    if (isAllCellsOpened) return;
     setDrawCount((prev) => prev + 1);
-    const drawnNumber = Math.floor(Math.random() * 36) + 1;
+    const drawnNumber = Math.floor(Math.random() * MAX_DRAW_NUMBER) + 1;
     setLastDrawnNumber(drawnNumber);
 
     const cellIndex = grid.indexOf(drawnNumber);
 
+    // 未開封のマスだった場合
     if (cellIndex !== -1 && !openedCells.has(cellIndex)) {
       setOpenedCells((prev) => new Set(prev).add(cellIndex));
     } else {
-      setPoints((prev) => prev + 10);
+      // すでに開封済み、または盤面になかった場合（重複）はポイント加算
+      setPoints((prev) => prev + POINT_REWARD);
     }
-  }, [grid, openedCells]);
+  }, [grid, openedCells, isAllCellsOpened]);
 
   const handleManualSelect = useCallback(
     (index: number) => {
-      if (points >= 100 && !openedCells.has(index)) {
+      if (points >= POINT_COST && !openedCells.has(index)) {
         setDrawCount((prev) => prev + 1);
         setOpenedCells((prev) => new Set(prev).add(index));
-        setPoints((prev) => prev - 100);
+        setPoints((prev) => prev - POINT_COST);
         setIsManualSelectMode(false);
         return true;
       }
@@ -93,6 +121,8 @@ export const useBingoGame = () => {
     handleManualSelect,
     drawCount,
     bingoLines,
+    isAllCellsOpened,
+    canCompleteWithPoints,
     resetGame,
   };
 };
