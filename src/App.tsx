@@ -25,17 +25,19 @@ function App() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-neutral-900 font-sans text-white selection:bg-yellow-500/30">
-      <header className="flex items-center justify-between border-b border-neutral-800 bg-black/50 p-4">
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold tracking-tighter opacity-80">
+      <header className="border-b border-neutral-800 bg-black/50 px-4 py-3 md:px-6 md:py-4">
+        <div className="mx-auto max-w-5xl">
+          <h1 className="text-base font-bold tracking-tighter opacity-80 md:text-xl lg:text-2xl">
             ドールズフロントライン風 ビンゴイベントシミュレーター
           </h1>
         </div>
       </header>
 
-      <main className="container mx-auto flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-12 p-4 lg:p-8">
-        <div className="flex w-full max-w-[1100px] flex-col items-center justify-center gap-8 lg:flex-row lg:items-center lg:gap-12">
-          <div className="flex w-full max-w-[400px] flex-col gap-4 lg:max-w-[540px]">
+      <main className="mx-auto flex min-h-[calc(100vh-49px)] max-w-5xl flex-col items-center justify-center gap-8 p-4 md:min-h-[calc(100vh-57px)] md:p-5 lg:p-6">
+        {/* Grid + Controls */}
+        <div className="flex w-full flex-col items-center gap-5 md:flex-row md:items-stretch md:gap-6 lg:gap-8">
+          {/* Bingo Grid */}
+          <div className="w-full max-w-sm shrink-0 md:max-w-none md:basis-[420px] lg:basis-[520px]">
             <div
               role="group"
               aria-label="ビンゴグリッド"
@@ -51,7 +53,7 @@ function App() {
                       disabled={!isManualSelectMode || isOpened}
                       aria-label={`${num}番のセル${isOpened ? '（開封済み）' : isManualSelectMode ? '（クリックで開封）' : ''}`}
                       aria-pressed={isOpened}
-                      className={`relative flex items-center justify-center font-bold transition-all duration-300 lg:text-lg ${isOpened ? 'bg-yellow-900/40 text-yellow-500 shadow-[inset_0_0_15px_rgba(234,179,8,0.2)]' : 'bg-neutral-800/30 text-neutral-400 hover:bg-neutral-800/50'} ${isManualSelectMode && !isOpened ? 'animate-pulse cursor-crosshair ring-2 ring-yellow-400' : ''} `}
+                      className={`relative flex items-center justify-center text-sm font-bold transition-all duration-300 md:text-base lg:text-lg ${isOpened ? 'bg-yellow-900/40 text-yellow-500 shadow-[inset_0_0_15px_rgba(234,179,8,0.2)]' : 'bg-neutral-800/30 text-neutral-400 hover:bg-neutral-800/50'} ${isManualSelectMode && !isOpened ? 'animate-pulse cursor-crosshair ring-2 ring-yellow-400' : ''} `}
                     >
                       <span className="relative z-10">{num}</span>
                     </button>
@@ -97,20 +99,21 @@ function App() {
             </div>
           </div>
 
-          <div className="flex w-full max-w-[400px] flex-col lg:max-w-[400px]">
+          {/* Control Panel */}
+          <div className="flex w-full max-w-sm flex-col md:max-w-none md:flex-1">
             <section
               aria-labelledby="section-controls"
-              className="relative flex h-full flex-col justify-center overflow-hidden rounded-sm border border-neutral-800 bg-neutral-800/30 p-6 shadow-xl lg:p-7"
+              className="relative flex flex-1 flex-col justify-center overflow-hidden rounded-sm border border-neutral-800 bg-neutral-800/30 p-5 shadow-xl lg:p-6"
             >
               <div aria-hidden="true" className="absolute top-0 right-0 h-16 w-16 translate-x-8 -translate-y-8 -rotate-45 bg-yellow-500/5"></div>
 
-              <div className="mb-4 flex items-end justify-between border-b border-neutral-700 pb-2 lg:mb-8">
-                <h2 id="section-controls" className="flex items-center gap-2 text-xl font-black tracking-tighter italic lg:text-2xl">
-                  <span aria-hidden="true" className="h-6 w-1.5 bg-yellow-500"></span>
+              <div className="mb-4 flex items-end justify-between border-b border-neutral-700 pb-2 lg:mb-6">
+                <h2 id="section-controls" className="flex items-center gap-2 text-lg font-black tracking-tighter italic md:text-xl lg:text-2xl">
+                  <span aria-hidden="true" className="h-5 w-1.5 bg-yellow-500 md:h-6"></span>
                   保有ポイント
                 </h2>
-                <div className="flex flex-col items-end gap-3">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col items-end gap-2 md:gap-3">
+                  <div className="flex items-center gap-2 md:gap-3">
                     <button
                       onClick={resetGame}
                       aria-label="ゲームをリセットする"
@@ -122,39 +125,39 @@ function App() {
                       <span className="mb-1 block text-[9px] leading-none font-bold text-neutral-500 uppercase">
                         Trial Count
                       </span>
-                      <span className="font-mono text-xl font-black text-neutral-200">{drawCount}</span>
+                      <span className="font-mono text-lg font-black text-neutral-200 md:text-xl">{drawCount}</span>
                     </div>
                   </div>
                   <div className="text-right">
                     <span className="mb-1 block text-[9px] leading-none font-bold text-neutral-500 uppercase">
                       Current Points
                     </span>
-                    <span className="font-mono text-2xl font-black text-yellow-400 lg:text-3xl">{points}</span>
+                    <span className="font-mono text-xl font-black text-yellow-400 md:text-2xl lg:text-3xl">{points}</span>
                     <span className="ml-1 text-xs font-bold text-yellow-500/50">PT</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 lg:gap-6">
-                <div className="group relative flex min-h-[100px] flex-col items-center justify-center overflow-hidden rounded border border-neutral-800 bg-black/80 p-4 lg:min-h-[120px] lg:p-6">
+              <div className="flex flex-col gap-3 lg:gap-4">
+                <div className="group relative flex min-h-[80px] flex-col items-center justify-center overflow-hidden rounded border border-neutral-800 bg-black/80 p-3 md:min-h-[90px] lg:min-h-[100px] lg:p-4">
                   <div aria-hidden="true" className="absolute inset-0 bg-yellow-500/5 opacity-0 transition-opacity group-hover:opacity-100"></div>
-                  <div aria-live="polite" aria-atomic="true" className="font-mono text-5xl text-yellow-400 drop-shadow-[0_0_15px_rgba(234,179,8,0.4)] lg:text-6xl">
+                  <div aria-live="polite" aria-atomic="true" className="font-mono text-4xl text-yellow-400 drop-shadow-[0_0_15px_rgba(234,179,8,0.4)] md:text-5xl lg:text-6xl">
                     {lastDrawnNumber ? (
                       <span className="animate-in fade-in zoom-in duration-500">
                         {String(lastDrawnNumber).padStart(2, '0')}
                       </span>
                     ) : (
-                      <span aria-hidden="true" className="text-3xl tracking-widest text-neutral-800 italic lg:text-4xl">--</span>
+                      <span aria-hidden="true" className="text-2xl tracking-widest text-neutral-800 italic md:text-3xl lg:text-4xl">--</span>
                     )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={handleRandomDraw}
                     disabled={isAllCellsOpened}
                     aria-label="乱数読解を実行して数字を抽選する"
-                    className={`group relative py-4 text-xl font-black tracking-[0.2em] shadow-lg transition-all lg:py-5 lg:text-2xl ${
+                    className={`group relative py-3.5 text-lg font-black tracking-[0.2em] shadow-lg transition-all md:py-4 md:text-xl lg:py-5 lg:text-2xl ${
                       isAllCellsOpened
                         ? 'cursor-not-allowed bg-neutral-800 text-neutral-600 shadow-none'
                         : 'bg-yellow-500 text-black shadow-yellow-500/10 hover:bg-yellow-400 active:scale-95'
@@ -168,7 +171,7 @@ function App() {
                     disabled={points < 100 || isAllCellsOpened}
                     aria-pressed={isManualSelectMode}
                     aria-label={`確定解読${isManualSelectMode ? '（選択中）' : ''}（100ポイント消費で任意のマスを開封）`}
-                    className={`relative flex flex-col items-center justify-center border-2 py-3 font-black tracking-widest transition-all active:scale-95 lg:py-4 ${
+                    className={`relative flex flex-col items-center justify-center border-2 py-2.5 font-black tracking-widest transition-all active:scale-95 md:py-3 lg:py-4 ${
                       points >= 100 && !isAllCellsOpened
                         ? 'border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:bg-neutral-800'
                         : 'cursor-not-allowed border-neutral-800 text-neutral-700'
@@ -187,13 +190,14 @@ function App() {
           </div>
         </div>
 
-        <div className="flex w-full max-w-[400px] flex-col gap-6 border-t border-neutral-800 pt-12 lg:max-w-[940px]">
-          <section aria-labelledby="section-explanation" className="rounded-sm border bg-black/40 p-8 shadow-inner">
+        {/* Explanation */}
+        <div className="flex w-full flex-col gap-4 border-t border-neutral-800 pt-8">
+          <section aria-labelledby="section-explanation" className="rounded-sm border bg-black/40 p-5 shadow-inner md:p-6">
             <h2 id="section-explanation" className="mb-3 flex items-center gap-2 text-lg text-yellow-500 uppercase">
               直感に反するマスの埋まらなさについて
             </h2>
 
-            <div className="grid gap-8 leading-relaxed text-neutral-400">
+            <div className="grid gap-4 leading-relaxed text-neutral-400">
               <div className="space-y-4">
                 <p>
                   ドルフロのビンゴイベントで、「リーチに入ってから妙に揃わない。確率を操作されているのでは？」と感じたことはないでしょうか。実は「あと少しなのに埋まらない」という現象には、統計学的な裏付けがあります。
